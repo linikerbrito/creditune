@@ -1,0 +1,124 @@
+<main class="dashboard-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Área do analista</p>
+      <h1>Fila de propostas</h1>
+      <p>Revise solicitações e acompanhe o status de cada análise.</p>
+    </div>
+    <div class="queue-count" aria-label="Propostas pendentes">
+      <span class="count-value">{{ pendingCount() }}</span>
+      <span class="count-label">pendentes</span>
+    </div>
+  </header>
+
+  <section class="filters" aria-labelledby="filters-heading">
+    <div class="filters-heading">
+      <h2 id="filters-heading">Filtros</h2>
+      <button class="clear-button" type="button" (click)="clearFilters()">Limpar filtros</button>
+    </div>
+
+    <div class="filter-grid">
+      <label class="filter-field">
+        <span>Status</span>
+        <select [value]="statusFilter()" (change)="onStatusChange($event)">
+          <option value="pending">Pendente</option>
+          <option value="in_review">Em análise</option>
+          <option value="approved">Aprovada</option>
+          <option value="rejected">Rejeitada</option>
+          <option value="all">Todos os status</option>
+        </select>
+      </label>
+
+      <label class="filter-field">
+        <span>Valor mínimo</span>
+        <div class="currency-input">
+          <span aria-hidden="true">R$</span>
+          <input type="number" min="0" step="500" [value]="minimumAmount() ?? ''" (input)="onMinimumAmountChange($event)" placeholder="Sem mínimo" inputmode="decimal">
+        </div>
+      </label>
+
+      <label class="filter-field">
+        <span>Valor máximo</span>
+        <div class="currency-input">
+          <span aria-hidden="true">R$</span>
+          <input type="number" min="0" step="500" [value]="maximumAmount() ?? ''" (input)="onMaximumAmountChange($event)" placeholder="Sem máximo" inputmode="decimal">
+        </div>
+      </label>
+
+      <label class="filter-field">
+        <span>Enviada a partir de</span>
+        <input type="date" [value]="startDate()" (change)="onStartDateChange($event)">
+      </label>
+
+      <label class="filter-field">
+        <span>Enviada até</span>
+        <input type="date" [value]="endDate()" (change)="onEndDateChange($event)">
+      </label>
+    </div>
+  </section>
+
+  <section class="queue-section" aria-labelledby="queue-heading">
+    <div class="queue-heading">
+      <div>
+        <p class="eyebrow">Solicitações</p>
+        <h2 id="queue-heading">Propostas</h2>
+      </div>
+      <p class="result-range" aria-live="polite">{{ resultRange() }}</p>
+    </div>
+
+    @if (visibleProposals().length > 0) {
+      <section class="table-scroll" aria-label="Tabela de propostas">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Solicitante</th>
+              <th scope="col">Valor solicitado</th>
+              <th scope="col">Prazo</th>
+              <th scope="col">Data de envio</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="visually-hidden">Ação</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (proposal of visibleProposals(); track proposal.id) {
+              <tr>
+                <td>
+                  <span class="applicant-name">{{ proposal.applicantName }}</span>
+                  <span class="proposal-id">{{ proposal.id }}</span>
+                </td>
+                <td class="amount-cell">{{ formatCurrency(proposal.requestedAmount) }}</td>
+                <td>{{ proposal.termMonths }} meses</td>
+                <td>{{ formatDate(proposal.createdAt) }}</td>
+                <td><span [class]="'status-badge status-' + proposal.status">{{ statusLabel(proposal.status) }}</span></td>
+                <td class="action-cell">
+                  <a class="review-link" [routerLink]="['/analyst/proposals', proposal.id]" [attr.aria-label]="'Analisar proposta de ' + proposal.applicantName">
+                    Analisar <span aria-hidden="true">&#8594;</span>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    } @else {
+      <output class="empty-state">
+        <span class="empty-mark" aria-hidden="true">&#10003;</span>
+        <h3>Nenhuma proposta neste filtro</h3>
+        <p>Altere os critérios ou limpe os filtros para ver outras solicitações.</p>
+        <button class="clear-button" type="button" (click)="clearFilters()">Limpar filtros</button>
+      </output>
+    }
+
+    <nav class="pagination" aria-label="Paginação da fila">
+      <span class="page-indicator">Página {{ displayedPage() }} de {{ totalPages() }}</span>
+      <div class="page-controls">
+        <button type="button" (click)="previousPage()" [disabled]="displayedPage() <= 1" aria-label="Página anterior">
+          <span aria-hidden="true">&#8592;</span> Anterior
+        </button>
+        <button type="button" (click)="nextPage()" [disabled]="displayedPage() >= totalPages()" aria-label="Próxima página">
+          Próxima <span aria-hidden="true">&#8594;</span>
+        </button>
+      </div>
+    </nav>
+  </section>
+</main>

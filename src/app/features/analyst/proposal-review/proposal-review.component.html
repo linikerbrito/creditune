@@ -1,0 +1,113 @@
+<main class="review-page">
+  @if (proposal(); as currentProposal) {
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">Área do analista</p>
+        <h1>Revisão da proposta</h1>
+        <p class="proposal-reference">Código {{ currentProposal.id }}</p>
+      </div>
+      @if (currentStatus(); as status) {
+        <span [class]="'status-badge status-' + status">
+          <span class="status-dot" aria-hidden="true"></span>
+          {{ statusLabel(status) }}
+        </span>
+      }
+    </header>
+
+    <section class="detail-section" aria-labelledby="applicant-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Solicitante</p>
+        <h2 id="applicant-heading">{{ currentProposal.applicantName }}</h2>
+      </div>
+      <dl class="details-grid">
+        <div><dt>Identificador do cliente</dt><dd>{{ currentProposal.applicantId }}</dd></div>
+        <div><dt>Data de envio</dt><dd>{{ formatDate(currentProposal.createdAt) }}</dd></div>
+        <div><dt>Renda mensal informada</dt><dd class="money-value">{{ formatCurrency(currentProposal.monthlyIncome) }}</dd></div>
+        @if (currentProposal.creditScore !== undefined) {
+          <div><dt>Score estimado</dt><dd>{{ currentProposal.creditScore }}</dd></div>
+        }
+      </dl>
+    </section>
+
+    <section class="detail-section loan-section" aria-labelledby="loan-heading">
+      <div class="section-heading">
+        <p class="eyebrow">Solicitação</p>
+        <h2 id="loan-heading">Condições desejadas</h2>
+      </div>
+      <dl class="details-grid loan-details">
+        <div><dt>Valor solicitado</dt><dd class="requested-amount">{{ formatCurrency(currentProposal.requestedAmount) }}</dd></div>
+        <div><dt>Prazo solicitado</dt><dd>{{ currentProposal.termMonths }} meses</dd></div>
+        <div><dt>Parcela estimada</dt><dd class="money-value">{{ formatCurrency(currentProposal.requestedAmount / currentProposal.termMonths) }} / mês, sem juros</dd></div>
+      </dl>
+      <p class="estimate-note">Estimativa simples baseada no valor e prazo informados; não inclui juros ou tarifas.</p>
+    </section>
+
+    @if (currentAnalystNote(); as analystNote) {
+      <section class="existing-note" aria-labelledby="existing-note-heading">
+        <h2 id="existing-note-heading">Justificativa registrada</h2>
+        <p>{{ analystNote }}</p>
+      </section>
+    }
+
+    @if (decisionState() === 'success') {
+      <output class="feedback success-message">
+        Proposta {{ currentStatus() === 'approved' ? 'aprovada' : 'rejeitada' }} com sucesso.
+      </output>
+    } @else if (decisionState() === 'error') {
+      <p class="feedback error-message" role="alert">Não foi possível registrar a decisão. Tente novamente.</p>
+    }
+
+    @if (canDecide()) {
+      @if (confirmRejection()) {
+        <section class="rejection-panel" aria-labelledby="rejection-heading">
+          <h2 id="rejection-heading">Justificativa da rejeição</h2>
+          <p>Registre o motivo que será exibido ao solicitante.</p>
+          <form [formGroup]="rejectionForm" (ngSubmit)="reject()" novalidate>
+            <label class="field-label" for="analyst-note">Justificativa <span aria-hidden="true">*</span></label>
+            <textarea
+              id="analyst-note"
+              formControlName="analystNote"
+              rows="4"
+              maxlength="1000"
+              placeholder="Descreva o motivo da decisão"
+              [attr.aria-invalid]="rejectionForm.controls.analystNote.touched && rejectionForm.controls.analystNote.invalid"
+              aria-describedby="justification-help justification-error"
+            ></textarea>
+            <div class="field-meta">
+              <span id="justification-help">Obrigatória para confirmar a rejeição.</span>
+              <span>{{ rejectionForm.controls.analystNote.value.length }}/1000</span>
+            </div>
+            @if (rejectionForm.controls.analystNote.touched && rejectionForm.controls.analystNote.invalid) {
+              <p class="field-error" id="justification-error">Informe uma justificativa antes de confirmar.</p>
+            }
+            <div class="decision-actions">
+              <button class="secondary-button" type="button" (click)="cancelRejection()" [disabled]="decisionState() === 'saving'">Cancelar</button>
+              <button class="reject-button" type="submit" [disabled]="decisionState() === 'saving'">
+                {{ decisionState() === 'saving' ? 'Registrando...' : 'Confirmar rejeição' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      } @else {
+        <section class="decision-panel" aria-label="Decisão da proposta">
+          <div>
+            <h2>Registrar decisão</h2>
+            <p>Confira os dados antes de aprovar ou rejeitar a solicitação.</p>
+          </div>
+          <div class="decision-actions">
+            <button class="reject-button" type="button" (click)="beginRejection()">Rejeitar</button>
+            <button class="approve-button" type="button" (click)="approve()" [disabled]="decisionState() === 'saving'">
+              {{ decisionState() === 'saving' ? 'Registrando...' : 'Aprovar proposta' }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+  } @else {
+    <section class="not-found">
+      <p class="eyebrow">Área do analista</p>
+      <h1>Proposta não encontrada</h1>
+      <p>Não localizamos uma proposta com este código.</p>
+    </section>
+  }
+</main>
