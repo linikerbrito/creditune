@@ -1,0 +1,23 @@
+<nav class="stepper" [attr.aria-label]="ariaLabel()">
+  <ol>
+    @for (step of renderedSteps(); track step.number) {
+      <li
+        class="step"
+        [class.is-current]="step.state === 'current'"
+        [class.is-complete]="step.state === 'complete'"
+        [attr.aria-current]="step.state === 'current' ? 'step' : null"
+      >
+        <span class="step-marker" aria-hidden="true">
+          @if (step.state === 'complete') { &#10003; }
+          @else { {{ step.number }} }
+        </span>
+        <span class="step-copy">
+          <span class="step-label">{{ step.label }}</span>
+          @if (step.description) {
+            <span class="step-description">{{ step.description }}</span>
+          }
+        </span>
+      </li>
+    }
+  </ol>
+</nav>

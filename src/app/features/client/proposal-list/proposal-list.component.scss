@@ -1,0 +1,44 @@
+:host { display: block; min-height: 100%; background: var(--creditune-background); color: var(--creditune-text); }
+.proposal-list-page { width: min(100% - 2rem, 1120px); margin: 0 auto; padding: 2.5rem 0 4rem; }
+.page-heading, .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.page-heading { margin-bottom: 1.5rem; }
+.eyebrow { margin: 0 0 0.4rem; color: var(--creditune-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: 0.4rem; font-size: clamp(1.8rem, 5vw, 2.4rem); line-height: 1.15; }
+.page-heading p:last-child { margin-bottom: 0; color: var(--creditune-muted); }
+.new-proposal-button { display: inline-flex; min-height: 2.8rem; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.65rem 1rem; border-radius: 5px; background: var(--creditune-accent); color: var(--creditune-background); font-size: 0.875rem; font-weight: 700; text-decoration: none; }
+.new-proposal-button:hover { background: color-mix(in srgb, var(--creditune-accent) 88%, black); }
+.new-proposal-button:focus-visible { outline: 3px solid var(--creditune-text); outline-offset: 2px; }
+.tracking-link:focus-visible { outline: 3px solid var(--creditune-muted); outline-offset: 2px; }
+.summary-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+.summary-item { display: grid; min-width: 9rem; gap: 0.2rem; padding: 0.9rem 1rem; border: 1px solid var(--creditune-border); border-radius: 8px; background: var(--creditune-surface); }
+.summary-pending { border-color: color-mix(in srgb, var(--creditune-pending) 40%, var(--creditune-border)); }
+.summary-value { color: var(--creditune-text); font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.summary-label { color: var(--creditune-muted); font-size: 0.75rem; }
+.proposals-section { padding: 1.25rem; border: 1px solid var(--creditune-border); border-radius: 8px; background: var(--creditune-surface); }
+.section-heading { margin-bottom: 1.25rem; }
+.section-heading .eyebrow { margin-bottom: 0.3rem; }
+.section-heading h2 { margin-bottom: 0; font-size: 1rem; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--creditune-border); border-radius: 8px; }
+table { width: 100%; min-width: 760px; border-collapse: collapse; text-align: left; }
+thead { background: color-mix(in srgb, var(--creditune-background) 55%, var(--creditune-surface)); }
+th { padding: 0.75rem 0.85rem; color: var(--creditune-muted); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
+td { padding: 0.85rem; border-top: 1px solid var(--creditune-border); color: var(--creditune-text); font-size: 0.85rem; white-space: nowrap; }
+tbody tr:hover { background: color-mix(in srgb, var(--creditune-background) 45%, var(--creditune-surface)); }
+.proposal-code, .applicant-name { display: block; }
+.proposal-code { color: var(--creditune-muted); font-size: 0.75rem; font-weight: 500; }
+.applicant-name { margin-top: 0.2rem; color: var(--creditune-text); font-size: 0.88rem; font-weight: 700; }
+.money-value { color: var(--creditune-accent); }
+.tracking-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--creditune-muted); font-size: 0.8rem; font-weight: 700; text-decoration: none; }
+.tracking-link:hover { color: var(--creditune-text); text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { display: grid; justify-items: center; padding: 2.5rem 1rem; text-align: center; }
+.empty-state h3 { margin-bottom: 0.4rem; font-size: 1.1rem; }
+.empty-state p:not(.eyebrow) { max-width: 30rem; color: var(--creditune-muted); line-height: 1.55; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 600px) {
+  .proposal-list-page { width: min(100% - 1.25rem, 1120px); padding-top: 1.75rem; }
+  .page-heading { align-items: flex-start; flex-direction: column; }
+  .summary-row { gap: 0.65rem; }
+  .summary-item { min-width: 0; flex: 1; padding: 0.75rem; }
+  .proposals-section { padding: 1rem; }
+}

@@ -1,0 +1,9 @@
+:host { display: block; }
+.currency-field { display: flex; min-width: 0; height: 2.9rem; align-items: center; gap: 0.55rem; padding: 0 0.8rem; border: 1px solid var(--creditune-border); border-radius: 5px; background: var(--creditune-surface); color: var(--creditune-muted); transition: border-color 120ms ease, box-shadow 120ms ease; }
+.currency-field:focus-within { border-color: var(--creditune-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--creditune-primary) 15%, transparent); }
+.currency-prefix { flex: 0 0 auto; color: var(--creditune-primary); font-size: 0.85rem; font-weight: 750; }
+.currency-control { width: 100%; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--creditune-accent); font: inherit; font-variant-numeric: tabular-nums; font-weight: 700; }
+.currency-control::placeholder { color: var(--creditune-muted); }
+.currency-field.is-disabled { background: color-mix(in srgb, var(--creditune-background) 70%, var(--creditune-surface)); color: var(--creditune-muted); }
+.currency-control:disabled { cursor: not-allowed; color: var(--creditune-muted); }
+@media (prefers-reduced-motion: reduce) { .currency-field { transition: none; } }

@@ -1,0 +1,17 @@
+<div class="currency-field" [class.is-disabled]="disabled()">
+  <span class="currency-prefix" aria-hidden="true">R$</span>
+  <input
+    class="currency-control"
+    type="text"
+    [id]="inputId() || null"
+    [value]="formattedValue()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [attr.aria-label]="ariaLabel() || null"
+    [attr.aria-describedby]="ariaDescribedBy() || null"
+    inputmode="numeric"
+    autocomplete="off"
+    (input)="handleInput($event)"
+    (blur)="markTouched()"
+  >
+</div>

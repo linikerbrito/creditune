@@ -1,0 +1,7 @@
+:host { display: inline-flex; vertical-align: middle; }
+.status-badge { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.65rem; border: 1px solid transparent; border-radius: 999px; font-size: 0.75rem; font-weight: 750; line-height: 1.2; white-space: nowrap; }
+.status-dot { width: 0.5rem; aspect-ratio: 1; border-radius: 50%; background: currentColor; }
+.status-pending { border-color: color-mix(in srgb, var(--creditune-pending) 35%, var(--creditune-border)); background: color-mix(in srgb, var(--creditune-pending) 10%, var(--creditune-surface)); color: var(--creditune-pending); }
+.status-in_review { border-color: var(--creditune-warning); background: var(--creditune-warning); color: var(--creditune-background); }
+.status-approved { border-color: color-mix(in srgb, var(--creditune-success) 35%, var(--creditune-border)); background: color-mix(in srgb, var(--creditune-success) 12%, var(--creditune-surface)); color: var(--creditune-success); }
+.status-rejected { border-color: color-mix(in srgb, var(--creditune-danger) 35%, var(--creditune-border)); background: color-mix(in srgb, var(--creditune-danger) 8%, var(--creditune-surface)); color: var(--creditune-danger); }

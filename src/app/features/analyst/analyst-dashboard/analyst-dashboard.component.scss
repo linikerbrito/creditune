@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: var(--creditune-background);
+  color: var(--creditune-text);
+}
+
+.dashboard-page {
+  width: min(100% - 2rem, 1120px);
+  margin: 0 auto;
+  padding: 2.5rem 0 4rem;
+}
+
+.page-heading,
+.queue-heading,
+.filters-heading,
+.pagination,
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-heading { margin-bottom: 1.5rem; }
+.eyebrow { margin: 0 0 0.4rem; color: var(--creditune-primary); font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: 0.4rem; font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.15; }
+.page-heading > div:first-child > p:last-child { margin-bottom: 0; color: var(--creditune-muted); }
+
+.queue-count { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.65rem 0.85rem; border: 1px solid color-mix(in srgb, var(--creditune-pending) 40%, var(--creditune-border)); border-radius: 6px; background: color-mix(in srgb, var(--creditune-pending) 10%, var(--creditune-surface)); color: var(--creditune-pending); }
+.count-value { font-size: 1.3rem; font-weight: 800; }
+.count-label { font-size: 0.78rem; font-weight: 700; }
+
+.filters, .queue-section { border: 1px solid var(--creditune-border); border-radius: 8px; background: var(--creditune-surface); }
+.filters { padding: 1.15rem 1.25rem 1.25rem; }
+.filters-heading { margin-bottom: 1rem; }
+.filters-heading h2, .queue-heading h2 { margin-bottom: 0; font-size: 1rem; }
+.filter-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.9rem; }
+.filter-field { display: flex; min-width: 0; flex-direction: column; gap: 0.4rem; color: var(--creditune-muted); font-size: 0.78rem; font-weight: 650; }
+.filter-field input, .filter-field select { width: 100%; min-width: 0; height: 2.6rem; padding: 0 0.65rem; border: 1px solid var(--creditune-border); border-radius: 5px; outline: none; background: var(--creditune-surface); color: var(--creditune-text); font: inherit; font-weight: 450; }
+.filter-field input:focus, .filter-field select:focus { border-color: var(--creditune-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--creditune-primary) 15%, transparent); }
+.currency-input { display: flex; align-items: center; height: 2.6rem; padding-left: 0.65rem; border: 1px solid var(--creditune-border); border-radius: 5px; color: var(--creditune-muted); }
+.currency-input:focus-within { border-color: var(--creditune-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--creditune-primary) 15%, transparent); }
+.currency-input input { height: 100%; padding-left: 0.35rem; border: 0; box-shadow: none; }
+.clear-button { padding: 0.35rem 0; border: 0; background: transparent; color: var(--creditune-primary); cursor: pointer; font: inherit; font-size: 0.8rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.clear-button:focus-visible, .review-link:focus-visible, .page-controls button:focus-visible { outline: 3px solid color-mix(in srgb, var(--creditune-primary) 55%, var(--creditune-surface)); outline-offset: 2px; }
+
+.queue-section { margin-top: 1.5rem; padding: 1.25rem; }
+.queue-heading { margin-bottom: 1rem; }
+.queue-heading .eyebrow { margin-bottom: 0.3rem; }
+.result-range { margin: 0; color: var(--creditune-muted); font-size: 0.8rem; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--creditune-border); border-radius: 6px; }
+table { width: 100%; min-width: 780px; border-collapse: collapse; text-align: left; }
+thead { background: color-mix(in srgb, var(--creditune-background) 55%, var(--creditune-surface)); }
+th { padding: 0.75rem 0.85rem; color: var(--creditune-muted); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+td { padding: 0.85rem; border-top: 1px solid var(--creditune-border); color: var(--creditune-muted); font-size: 0.85rem; white-space: nowrap; }
+tbody tr:hover { background: color-mix(in srgb, var(--creditune-background) 45%, var(--creditune-surface)); }
+.applicant-name, .proposal-id { display: block; }
+.applicant-name { color: var(--creditune-text); font-weight: 700; }
+.proposal-id { margin-top: 0.2rem; color: var(--creditune-muted); font-size: 0.72rem; }
+.amount-cell { color: var(--creditune-accent); font-weight: 700; }
+.status-badge { display: inline-block; padding: 0.35rem 0.55rem; border-radius: 999px; font-size: 0.73rem; font-weight: 750; }
+.status-pending { background: color-mix(in srgb, var(--creditune-pending) 10%, var(--creditune-surface)); color: var(--creditune-pending); }
+.status-in_review { background: var(--creditune-warning); color: var(--creditune-background); }
+.status-approved { background: color-mix(in srgb, var(--creditune-success) 12%, var(--creditune-surface)); color: var(--creditune-success); }
+.status-rejected { background: color-mix(in srgb, var(--creditune-danger) 12%, var(--creditune-surface)); color: var(--creditune-danger); }
+.review-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--creditune-primary); font-size: 0.8rem; font-weight: 750; text-decoration: none; }
+.review-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.empty-state { display: grid; justify-items: center; padding: 2.5rem 1rem; text-align: center; }
+.empty-mark { display: grid; width: 2.5rem; aspect-ratio: 1; place-items: center; margin-bottom: 0.85rem; border-radius: 50%; background: color-mix(in srgb, var(--creditune-success) 12%, var(--creditune-surface)); color: var(--creditune-primary); }
+.empty-state h3 { margin-bottom: 0.35rem; font-size: 1rem; }
+.empty-state p { margin-bottom: 0.55rem; color: var(--creditune-muted); font-size: 0.85rem; }
+.pagination { margin-top: 1rem; }
+.page-indicator { color: var(--creditune-muted); font-size: 0.8rem; }
+.page-controls { gap: 0.5rem; }
+.page-controls button { min-height: 2.4rem; padding: 0.45rem 0.7rem; border: 1px solid var(--creditune-border); border-radius: 5px; background: var(--creditune-surface); color: var(--creditune-text); cursor: pointer; font: inherit; font-size: 0.8rem; font-weight: 650; }
+.page-controls button:disabled { cursor: not-allowed; opacity: 0.5; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+
+@media (max-width: 800px) {
+  .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .dashboard-page { width: min(100% - 1.25rem, 1120px); padding-top: 1.75rem; }
+  .filters, .queue-section { padding: 1rem; }
+  .page-heading { align-items: flex-start; }
+  .queue-count { flex-direction: column; align-items: center; gap: 0.1rem; padding: 0.5rem; }
+  .filter-grid { grid-template-columns: minmax(0, 1fr); }
+  .queue-heading { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
+  .pagination { align-items: flex-start; flex-direction: column; }
+  .page-controls { width: 100%; }
+  .page-controls button { flex: 1; }
+}
