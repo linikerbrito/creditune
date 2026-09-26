@@ -1,0 +1,249 @@
+<main class="proposal-page">
+  <header class="page-heading">
+    <p class="eyebrow">Crédito pessoal</p>
+    <h1>Nova proposta</h1>
+    <p>Preencha seus dados para solicitar uma análise de crédito.</p>
+  </header>
+
+  <nav aria-label="Etapas da proposta" class="stepper">
+    <ol>
+      @for (step of steps; track step.number) {
+        <li [class.is-current]="currentStep() === step.number" [class.is-complete]="currentStep() > step.number">
+          <span class="step-number" [attr.aria-current]="currentStep() === step.number ? 'step' : null">
+            @if (currentStep() > step.number) { <span aria-hidden="true">&#10003;</span> }
+            @else { {{ step.number }} }
+          </span>
+          <span class="step-label">{{ step.label }}</span>
+        </li>
+      }
+    </ol>
+  </nav>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (currentStep() === 1) {
+      <section class="form-section" formGroupName="applicant" aria-labelledby="personal-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Etapa 1 de 3</p>
+          <h2 id="personal-heading">Seus dados e renda</h2>
+          <p>Informe os dados do titular da proposta.</p>
+        </div>
+
+        <div class="field-grid">
+          <label class="field field-wide">
+            <span>Nome completo</span>
+            <input type="text" formControlName="fullName" autocomplete="name" placeholder="Como aparece no documento">
+            @if (applicantGroup.controls.fullName.touched && applicantGroup.controls.fullName.hasError('required')) {
+              <span class="field-error">Informe seu nome completo.</span>
+            } @else if (applicantGroup.controls.fullName.touched && applicantGroup.controls.fullName.hasError('minlength')) {
+              <span class="field-error">Digite pelo menos 3 caracteres.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span>CPF</span>
+            <input type="text" formControlName="cpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00" aria-describedby="cpf-status">
+            <span class="field-hint" id="cpf-status" aria-live="polite">
+              @if (applicantGroup.controls.cpf.pending) {
+                Validando CPF...
+              } @else if (applicantGroup.controls.cpf.touched && applicantGroup.controls.cpf.hasError('required')) {
+                <span class="field-error">Informe o CPF.</span>
+              } @else if (applicantGroup.controls.cpf.touched && applicantGroup.controls.cpf.hasError('cpfInvalid')) {
+                <span class="field-error">Confira os números do CPF.</span>
+              } @else if (applicantGroup.controls.cpf.touched && applicantGroup.controls.cpf.hasError('cpfAlreadyRegistered')) {
+                <span class="field-error">Este CPF já possui cadastro na simulação.</span>
+              } @else {
+                A verificação pode levar alguns instantes.
+              }
+            </span>
+          </label>
+
+          <label class="field">
+            <span>E-mail</span>
+            <input type="email" formControlName="email" autocomplete="email" placeholder="voce@exemplo.com">
+            @if (applicantGroup.controls.email.touched && applicantGroup.controls.email.invalid) {
+              <span class="field-error">Informe um e-mail válido.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span>Renda mensal principal</span>
+            <div class="input-with-prefix">
+              <span aria-hidden="true">R$</span>
+              <input type="number" formControlName="monthlyIncome" min="0" step="100" inputmode="decimal" autocomplete="off">
+            </div>
+          </label>
+        </div>
+
+        <section class="income-section" formArrayName="additionalIncomes" aria-labelledby="other-income-heading">
+          <div class="income-heading">
+            <div>
+              <h3 id="other-income-heading">Outras fontes de renda</h3>
+              <p>Inclua rendas adicionais, se houver.</p>
+            </div>
+            <button class="text-button" type="button" (click)="addAdditionalIncome()">Adicionar fonte</button>
+          </div>
+
+          @for (income of additionalIncomes.controls; track $index; let index = $index) {
+            <div class="income-row" [formGroupName]="index">
+              <label class="field">
+                <span>Origem</span>
+                <input type="text" formControlName="source" placeholder="Ex.: trabalho autônomo">
+                @if (income.controls.source.touched && income.controls.source.invalid) {
+                  <span class="field-error">Informe a origem da renda.</span>
+                }
+              </label>
+              <label class="field">
+                <span>Valor mensal</span>
+                <div class="input-with-prefix">
+                  <span aria-hidden="true">R$</span>
+                  <input type="number" formControlName="monthlyAmount" min="1" step="50" inputmode="decimal">
+                </div>
+                @if (income.controls.monthlyAmount.touched && income.controls.monthlyAmount.invalid) {
+                  <span class="field-error">Informe um valor acima de zero.</span>
+                }
+              </label>
+              <button class="icon-button remove-income" type="button" (click)="removeAdditionalIncome(index)" [attr.aria-label]="'Remover fonte de renda ' + (index + 1)">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          }
+
+          <p class="income-total">Renda mensal considerada <strong>{{ formatCurrency(totalMonthlyIncome) }}</strong></p>
+          @if (applicantGroup.touched && applicantGroup.hasError('minimumIncome')) {
+            <p class="field-error" role="alert">A renda mensal total deve ser de pelo menos {{ formatCurrency(1500) }}.</p>
+          }
+        </section>
+
+        <div class="form-actions form-actions-end">
+          <button class="primary-button" type="button" (click)="nextStep()" [disabled]="applicantGroup.pending">
+            Continuar <span aria-hidden="true">&#8594;</span>
+          </button>
+        </div>
+      </section>
+    }
+
+    @if (currentStep() === 2) {
+      <section class="form-section" formGroupName="loan" aria-labelledby="loan-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Etapa 2 de 3</p>
+          <h2 id="loan-heading">Quanto você precisa?</h2>
+          <p>Ajuste o valor e o prazo para simular as parcelas.</p>
+        </div>
+
+        <div class="field-grid loan-fields">
+          <label class="field">
+            <span>Valor desejado</span>
+            <div class="input-with-prefix">
+              <span aria-hidden="true">R$</span>
+              <input type="number" formControlName="requestedAmount" min="1000" max="100000" step="500" inputmode="decimal">
+            </div>
+            <span class="field-hint">De R$ 1.000 a R$ 100.000</span>
+            @if (form.controls.loan.controls.requestedAmount.touched && form.controls.loan.controls.requestedAmount.invalid) {
+              <span class="field-error">Escolha um valor entre R$ 1.000 e R$ 100.000.</span>
+            }
+          </label>
+
+          <label class="field">
+            <span>Prazo para pagamento</span>
+            <select formControlName="termMonths">
+              <option [ngValue]="6">6 meses</option>
+              <option [ngValue]="12">12 meses</option>
+              <option [ngValue]="24">24 meses</option>
+              <option [ngValue]="36">36 meses</option>
+              <option [ngValue]="48">48 meses</option>
+              <option [ngValue]="60">60 meses</option>
+            </select>
+          </label>
+        </div>
+
+        <section class="simulation" aria-labelledby="simulation-heading" aria-live="polite">
+          <div class="simulation-heading">
+            <div>
+              <p class="eyebrow">Simulação estimada</p>
+              <h3 id="simulation-heading">Parcelas mensais</h3>
+            </div>
+            <span class="simulation-mark" aria-hidden="true">↗</span>
+          </div>
+          @if (simulation(); as estimate) {
+            <p class="monthly-payment">{{ formatCurrency(estimate.monthlyPayment) }}<span> / mês</span></p>
+            <dl class="simulation-details">
+              <div><dt>Prazo</dt><dd>{{ estimate.termMonths }} meses</dd></div>
+              <div><dt>Total estimado</dt><dd>{{ formatCurrency(estimate.totalRepayment) }}</dd></div>
+              <div><dt>Taxa efetiva anual</dt><dd>{{ estimate.annualInterestRate }}%</dd></div>
+            </dl>
+          } @else {
+            <p class="field-hint">Informe um valor e prazo válidos para calcular as parcelas.</p>
+          }
+          <p class="disclaimer">Estimativa ilustrativa. As condições finais dependem da análise da proposta.</p>
+        </section>
+
+        <div class="form-actions">
+          <button class="secondary-button" type="button" (click)="previousStep()"><span aria-hidden="true">&#8592;</span> Voltar</button>
+          <button class="primary-button" type="button" (click)="nextStep()">Revisar proposta <span aria-hidden="true">&#8594;</span></button>
+        </div>
+      </section>
+    }
+
+    @if (currentStep() === 3) {
+      <section class="form-section" aria-labelledby="review-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Etapa 3 de 3</p>
+          <h2 id="review-heading">Revise antes de enviar</h2>
+          <p>Confira os dados da solicitação. Você poderá acompanhar o andamento após o envio.</p>
+        </div>
+
+        <div class="review-list">
+          <section class="review-group" aria-labelledby="review-personal-heading">
+            <div class="review-group-heading">
+              <h3 id="review-personal-heading">Titular</h3>
+              <button class="text-button" type="button" (click)="currentStep.set(1)">Editar</button>
+            </div>
+            <dl>
+              <div><dt>Nome</dt><dd>{{ applicantGroup.controls.fullName.value }}</dd></div>
+              <div><dt>E-mail</dt><dd>{{ applicantGroup.controls.email.value }}</dd></div>
+              <div><dt>Renda mensal total</dt><dd>{{ formatCurrency(totalMonthlyIncome) }}</dd></div>
+            </dl>
+          </section>
+
+          <section class="review-group" aria-labelledby="review-loan-heading">
+            <div class="review-group-heading">
+              <h3 id="review-loan-heading">Crédito solicitado</h3>
+              <button class="text-button" type="button" (click)="currentStep.set(2)">Editar</button>
+            </div>
+            <dl>
+              <div><dt>Valor</dt><dd class="money-value">{{ formatCurrency(form.controls.loan.controls.requestedAmount.value) }}</dd></div>
+              <div><dt>Prazo</dt><dd>{{ form.controls.loan.controls.termMonths.value }} meses</dd></div>
+              @if (simulation(); as estimate) {
+                <div><dt>Parcela estimada</dt><dd class="money-value">{{ formatCurrency(estimate.monthlyPayment) }} / mês</dd></div>
+              }
+            </dl>
+          </section>
+        </div>
+
+        <div class="consent-group" formGroupName="review">
+          <label class="consent-label">
+            <input type="checkbox" formControlName="consent">
+            <span>Confirmo que os dados informados são verdadeiros e autorizo a análise desta proposta.</span>
+          </label>
+          @if (form.controls.review.controls.consent.touched && form.controls.review.controls.consent.invalid) {
+            <span class="field-error">Confirme os dados para enviar a proposta.</span>
+          }
+        </div>
+
+        @if (submitError(); as error) {
+          <p class="submit-error" role="alert">{{ error }}</p>
+        }
+
+        <div class="form-actions">
+          <button class="secondary-button" type="button" (click)="previousStep()" [disabled]="isSubmitting()">
+            <span aria-hidden="true">&#8592;</span> Voltar
+          </button>
+          <button class="primary-button" type="submit" [disabled]="isSubmitting()">
+            @if (isSubmitting()) { Enviando... }
+            @else { Enviar proposta <span aria-hidden="true">&#8594;</span> }
+          </button>
+        </div>
+      </section>
+    }
+  </form>
+</main>
