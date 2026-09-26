@@ -1,0 +1,109 @@
+<main class="tracking-page">
+  @if (proposal(); as currentProposal) {
+    <header class="page-heading">
+      <a class="back-link" routerLink="/client/proposals">
+        <span aria-hidden="true">&#8592;</span> Minhas propostas
+      </a>
+      <div class="heading-content">
+        <div>
+          <p class="eyebrow">Acompanhamento</p>
+          <h1>Proposta de crédito</h1>
+          <p class="proposal-reference">Código {{ currentProposal.id }}</p>
+        </div>
+        <span class="status-badge" [class]="'status-badge status-' + currentProposal.status" aria-label="Status atual: {{ statusLabel }}">
+          <span class="status-dot" aria-hidden="true"></span>
+          {{ statusLabel }}
+        </span>
+      </div>
+    </header>
+
+    <section class="status-summary" [attr.aria-labelledby]="'status-summary-heading'">
+      <div class="summary-mark" [class]="'summary-mark summary-' + currentProposal.status" aria-hidden="true">
+        @switch (currentProposal.status) {
+          @case ('pending') { &#8987; }
+          @case ('in_review') { &#8635; }
+          @case ('approved') { &#10003; }
+          @case ('rejected') { &#10005; }
+        }
+      </div>
+      <div>
+        <p class="eyebrow">Status da análise</p>
+        <h2 id="status-summary-heading">{{ statusLabel }}</h2>
+        <p>{{ statusMessage }}</p>
+      </div>
+    </section>
+
+    <section class="timeline-section" aria-labelledby="timeline-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Andamento</p>
+          <h2 id="timeline-heading">Etapas da proposta</h2>
+        </div>
+      </div>
+
+      <ol class="timeline">
+        @for (item of timeline(); track item.status) {
+          <li
+            class="timeline-item"
+            [class.is-complete]="item.state === 'complete'"
+            [class.is-current]="item.state === 'current'"
+            [class.is-upcoming]="item.state === 'upcoming'"
+            [class.is-not-applicable]="item.state === 'not-applicable'"
+            [attr.aria-current]="item.state === 'current' ? 'step' : null"
+          >
+            <span class="timeline-marker" aria-hidden="true">
+              @if (item.state === 'complete') { &#10003; }
+              @else if (item.state === 'not-applicable') { &#8212; }
+              @else { {{ $index + 1 }} }
+            </span>
+            <div class="timeline-copy">
+              <div class="timeline-title-row">
+                <h3>{{ item.label }}</h3>
+                @if (item.state === 'current') {
+                  <span class="current-label">Status atual</span>
+                } @else if (item.state === 'not-applicable') {
+                  <span class="future-label">Etapa alternativa</span>
+                }
+              </div>
+              <p>{{ item.description }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <section class="proposal-details" aria-labelledby="proposal-details-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Resumo</p>
+          <h2 id="proposal-details-heading">Dados da solicitação</h2>
+        </div>
+      </div>
+
+      <dl class="details-grid">
+        <div><dt>Solicitante</dt><dd>{{ currentProposal.applicantName }}</dd></div>
+        <div><dt>Valor solicitado</dt><dd class="money-value">{{ formatCurrency(currentProposal.requestedAmount) }}</dd></div>
+        <div><dt>Prazo solicitado</dt><dd>{{ currentProposal.termMonths }} meses</dd></div>
+        <div><dt>Renda mensal informada</dt><dd class="money-value">{{ formatCurrency(currentProposal.monthlyIncome) }}</dd></div>
+        <div><dt>Data de envio</dt><dd>{{ formatDate(currentProposal.createdAt) }}</dd></div>
+        @if (currentProposal.creditScore !== undefined) {
+          <div><dt>Score estimado</dt><dd>{{ currentProposal.creditScore }}</dd></div>
+        }
+      </dl>
+
+      @if (currentProposal.analystNote) {
+        <div class="analyst-note" aria-labelledby="analyst-note-heading">
+          <h3 id="analyst-note-heading">Observação da análise</h3>
+          <p>{{ currentProposal.analystNote }}</p>
+        </div>
+      }
+    </section>
+  } @else {
+    <output class="not-found">
+      <p class="eyebrow">Acompanhamento</p>
+      <h1>Proposta não encontrada</h1>
+      <p>Não localizamos uma proposta com este código.</p>
+      <a class="back-link" routerLink="/client/proposals">Voltar para minhas propostas</a>
+    </output>
+  }
+</main>

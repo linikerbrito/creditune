@@ -1,0 +1,75 @@
+<main class="proposal-list-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Área do cliente</p>
+      <h1>Minhas propostas</h1>
+      <p>Acompanhe suas solicitações de crédito em um só lugar.</p>
+    </div>
+    <a class="new-proposal-button" routerLink="/client/proposals/new">
+      Nova proposta <span aria-hidden="true">&#8594;</span>
+    </a>
+  </header>
+
+  <section class="summary-row" aria-label="Resumo das propostas">
+    <div class="summary-item">
+      <span class="summary-value">{{ proposals().length }}</span>
+      <span class="summary-label">propostas</span>
+    </div>
+    <div class="summary-item summary-pending">
+      <span class="summary-value">{{ pendingCount() }}</span>
+      <span class="summary-label">aguardando análise</span>
+    </div>
+  </section>
+
+  <section class="proposals-section" aria-labelledby="proposals-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Solicitações</p>
+        <h2 id="proposals-heading">Histórico de propostas</h2>
+      </div>
+    </div>
+
+    @if (proposals().length > 0) {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Valor solicitado</th>
+              <th scope="col">Prazo</th>
+              <th scope="col">Enviada em</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="visually-hidden">Ação</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (proposal of proposals(); track proposal.id) {
+              <tr>
+                <td>
+                  <span class="proposal-code">{{ proposal.id }}</span>
+                  <span class="applicant-name">{{ proposal.applicantName }}</span>
+                </td>
+                <td class="money-value">{{ formatCurrency(proposal.requestedAmount) }}</td>
+                <td>{{ proposal.termMonths }} meses</td>
+                <td>{{ formatDate(proposal.createdAt) }}</td>
+                <td><app-status-badge [status]="proposal.status" /></td>
+                <td>
+                  <a class="tracking-link" [routerLink]="['/client/proposals', proposal.id]" [attr.aria-label]="'Acompanhar proposta ' + proposal.id">
+                    Acompanhar <span aria-hidden="true">&#8594;</span>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <p class="eyebrow">Comece por aqui</p>
+        <h3>Nenhuma proposta por enquanto</h3>
+        <p>Quando você enviar uma solicitação, o status e os detalhes aparecerão nesta lista.</p>
+        <a class="new-proposal-button" routerLink="/client/proposals/new">Criar proposta</a>
+      </div>
+    }
+  </section>
+</main>
