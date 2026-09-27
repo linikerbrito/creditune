@@ -92,7 +92,7 @@ npm install
 ng serve
 ```
 
-A aplicação fica disponível em `http://localhost:4200`.
+A aplicação fica disponível em `https://creditune-topaz.vercel.app/`.
 
 ## Testes
 
